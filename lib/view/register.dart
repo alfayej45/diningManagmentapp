@@ -1,5 +1,8 @@
 import 'package:diningmanagement/view/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Register extends StatefulWidget {
   const Register({ Key? key }) : super(key: key);
@@ -25,6 +28,31 @@ class _RegisterState extends State<Register>
   }
 
   final _globalkey2 = GlobalKey<FormState>();
+  TextEditingController password =  TextEditingController();
+  TextEditingController confirmpassword =  TextEditingController();
+  TextEditingController email =  TextEditingController();
+
+ registration()async{
+  try {
+  UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    email: email.text,
+    password: password.text
+  );
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'weak-password') {
+    print('The password provided is too weak.');
+  } else if (e.code == 'email-already-in-use') {
+    print('The account already exists for that email.');
+  }
+} catch (e) {
+  print(e);
+}
+}
+
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +84,9 @@ class _RegisterState extends State<Register>
                   Padding(
                           padding: const EdgeInsets.only(left: 40, right: 40, top: 30),
                           child: TextFormField(
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
+                              
                               border: OutlineInputBorder(),
                               labelText: "Name",
                               hintText: "Enter your full name",
@@ -76,6 +106,7 @@ class _RegisterState extends State<Register>
                           Padding(
                           padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
                           child: TextFormField(
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Institute",
@@ -93,6 +124,7 @@ class _RegisterState extends State<Register>
                           Padding(
                           padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
                           child: TextFormField(
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Department",
@@ -110,6 +142,7 @@ class _RegisterState extends State<Register>
                           Padding(
                           padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
                           child: TextFormField(
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Phone",
@@ -137,6 +170,8 @@ class _RegisterState extends State<Register>
                           Padding(
                           padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
                           child: TextFormField(
+                            controller: email,
+                            keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Email",
@@ -146,7 +181,9 @@ class _RegisterState extends State<Register>
                         if(value!.isEmpty){
                           return "Please enter your email";
                           
-                        }
+                        }else if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)){
+                        return 'Please a valid Email';
+                      }
                         return null;
                       },
                           ),
@@ -154,6 +191,8 @@ class _RegisterState extends State<Register>
                           Padding(
                           padding: const EdgeInsets.only(left: 40, right: 40, top: 10),
                           child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            controller: password,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Password",
@@ -171,22 +210,35 @@ class _RegisterState extends State<Register>
                           Padding(
                           padding: const EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 40),
                           child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            controller: confirmpassword,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               labelText: "Confirm password",
                               hintText: "Enter confirm password",
-                            )
+                            ),
+                            validator: (value){
+                              if(value!.isEmpty){
+                                return "Please enter re-password";
+                              }else if(password.text != confirmpassword.text){
+                                return "your password don't match";
+                              }
+                            },
                           ),
                         ),
                           InkWell(
                   onTap: (){
+                    
                      if (_globalkey2.currentState!.validate()) {
                        print("all successful");
+                       registration();
                          ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),
       );
                
              }
+
+             
                     
                   },
                     child: Container(

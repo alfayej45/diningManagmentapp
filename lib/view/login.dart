@@ -1,4 +1,8 @@
+
+
+import 'package:diningmanagement/view/homepage.dart';
 import 'package:diningmanagement/view/register.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -24,6 +28,23 @@ class _LoginState extends State<Login>
     _controller.dispose();
   }
   final _globalkey = GlobalKey<FormState>();
+  TextEditingController password =  TextEditingController();
+  TextEditingController email =  TextEditingController();
+
+  void loginFun()async{
+    try {
+  UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: email.text,
+    password: password.text
+  );
+} on FirebaseAuthException catch (e) {
+  if (e.code == 'user-not-found') {
+    print('No user found for that email.');
+  } else if (e.code == 'wrong-password') {
+    print('Wrong password provided for that user.');
+  }
+}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +83,27 @@ class _LoginState extends State<Login>
                   Padding(
                     padding: const EdgeInsets.only(left: 40, right: 40, top: 40),
                     child: TextFormField(
+                      controller: email,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Email",
                         hintText: "Enter your email",
-                      )
+                      ),
+                                 validator: (value){
+                        if(value!.isEmpty){
+                          return "Please enter your email";
+                          
+                        }else if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)){
+                        return 'Please a valid Email';
+                      }
+                        return null;
+                      },
                     ),
                   ),
                     Padding(
                     padding: const EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 30),
                     child: TextFormField(
+                      controller: password,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Password",
@@ -89,6 +121,15 @@ class _LoginState extends State<Login>
                     
                 InkWell(
                   onTap: (){
+                               if (_globalkey.currentState!.validate()) {
+                       print("all successful");
+                       loginFun();
+                     
+                         ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Processing Data')),
+      );
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomePage()));
+                               }
                     
                   },
                     child: Container(
