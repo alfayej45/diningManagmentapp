@@ -46,6 +46,8 @@ class _LoginState extends State<Login>
 }
   }
 
+  bool _obscore = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,11 +105,19 @@ class _LoginState extends State<Login>
                     Padding(
                     padding: const EdgeInsets.only(left: 40, right: 40, top: 10, bottom: 30),
                     child: TextFormField(
+                      obscureText: _obscore,
                       controller: password,
+                    
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: "Password",
                         hintText: "Enter your Password",
+                        suffix: IconButton(onPressed: (){
+                          setState(() {
+                            _obscore = ! _obscore;
+                          });
+
+                        }, icon: Icon(_obscore?Icons.visibility_off:Icons.visibility))
                       ),
                       validator: (value){
                         if(value!.isEmpty){
