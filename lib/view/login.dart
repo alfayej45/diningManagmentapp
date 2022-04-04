@@ -1,7 +1,10 @@
 
 
+import 'dart:ui';
+
 import 'package:diningmanagement/view/homepage.dart';
 import 'package:diningmanagement/view/register.dart';
+import 'package:diningmanagement/view/userregister.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -37,8 +40,10 @@ class _LoginState extends State<Login>
     email: email.text,
     password: password.text
   );
+   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomePage()));
 } on FirebaseAuthException catch (e) {
   if (e.code == 'user-not-found') {
+    
     print('No user found for that email.');
   } else if (e.code == 'wrong-password') {
     print('Wrong password provided for that user.');
@@ -96,7 +101,7 @@ class _LoginState extends State<Login>
                           return "Please enter your email";
                           
                         }else if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value)){
-                        return 'Please a valid Email';
+                        return 'Please Enter valid Email';
                       }
                         return null;
                       },
@@ -112,7 +117,7 @@ class _LoginState extends State<Login>
                         border: OutlineInputBorder(),
                         labelText: "Password",
                         hintText: "Enter your Password",
-                        suffix: IconButton(onPressed: (){
+                        suffixIcon: IconButton(onPressed: (){
                           setState(() {
                             _obscore = ! _obscore;
                           });
@@ -138,7 +143,7 @@ class _LoginState extends State<Login>
                          ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Processing Data')),
       );
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomePage()));
+     
                                }
                     
                   },
@@ -163,7 +168,7 @@ class _LoginState extends State<Login>
 
                   InkWell(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> Register()));
+                  showAlertDialog(context);
                     },
                     child: RichText(text: TextSpan(
                       style: TextStyle(color: Colors.blueGrey),
@@ -182,7 +187,10 @@ class _LoginState extends State<Login>
                       ]
                     )
                     ),
-                  )
+                  ),
+
+
+             
                 
                 
                 ],
@@ -194,4 +202,82 @@ class _LoginState extends State<Login>
       ),
     );
   }
+}
+
+
+
+showAlertDialog(BuildContext context){
+  
+
+ AlertDialog alert = AlertDialog(
+   title: Column(
+     children: [
+       Text("Select your position"),
+       SizedBox(height: 20,),
+       
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Register()));
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.blueGrey,
+                              borderRadius: BorderRadius.circular(20),
+                              
+                            ),
+                            child: Text ("Manager", style: TextStyle( color: Colors.white)),
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                         InkWell(
+                            onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>UserRegister()));
+                          },
+                           child: Container(
+                             alignment: Alignment.center,
+                                               height: 50,
+                                               width: 100,
+                                               decoration: BoxDecoration(
+                                                 color: Colors.green,
+                                                 borderRadius: BorderRadius.circular(20)
+                                               ),
+                                               child: Text ("User" , style: TextStyle( color: Colors.white)),
+                                             ),
+                         ),
+                      ],
+                    ),
+                  ),
+     ],
+   ),
+  actions:[
+
+    new TextButton(
+      child: new Text("Cencel"),
+      onPressed: (){
+        Navigator.of(context).pop();
+      
+      },
+    )
+
+  ]
+ );
+
+ showDialog(
+   context: context,
+    builder: (BuildContext context){
+      return alert;
+
+    }
+    );
+  
+
 }

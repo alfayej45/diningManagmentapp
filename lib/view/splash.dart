@@ -1,7 +1,8 @@
 import 'dart:async';
 
 
-import 'package:diningmanagement/view/login.dart';
+import 'package:diningmanagement/view/homepage.dart';
+
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
  @override
   void initState(){
     super.initState();
-    Timer(Duration(seconds: 10), ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> Login())));
+    Timer(Duration(seconds: 10), ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomePage())));
   }
 
   @override
