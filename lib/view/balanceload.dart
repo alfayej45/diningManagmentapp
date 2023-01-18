@@ -1,35 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:random_string/random_string.dart';
 
 class BalanceLoadRequestUser extends StatefulWidget {
   BalanceLoadRequestUser({Key? key}) : super(key: key);
-
   @override
   State<BalanceLoadRequestUser> createState() => _BalanceLoadRequestUserState();
 }
-
 class _BalanceLoadRequestUserState extends State<BalanceLoadRequestUser> {
  final TextEditingController username =  TextEditingController();
   final TextEditingController token =  TextEditingController();
   final TextEditingController amount =  TextEditingController();
-
-// Its balance load request function
-
- Future<void> balancerequest() async {
-    final collucrion = FirebaseFirestore.instance.collection('Balance Load');
-    await collucrion.add({
+  FirebaseAuth auth=FirebaseAuth.instance;
+  // Its balance load request function
+    Future<void> balancerequest() async {
+     final collucrion = FirebaseFirestore.instance.collection('BalanceLoad');
+     var docs = randomString(10);
+     await collucrion.doc(docs.toString()).set({
       "name": username.text,
-      "token": token.text,
+      "token": auth.currentUser!.uid,
       "amount": amount.text,
-      
+       "id":docs.toString()
     });
-
-   username.text = ""; 
+    username.text = "";
     token.text = "";
     amount.text = "";
-    
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,21 +64,21 @@ class _BalanceLoadRequestUserState extends State<BalanceLoadRequestUser> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 5,
-                  left: 20,
-                  right: 20
-                ),
-                child: TextFormField(
-                  controller: token,
-                  decoration: InputDecoration(
-                    labelText: "Token Name",
-                    hintText: "Enter your token name",
-                    border: OutlineInputBorder()
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(
+              //     top: 5,
+              //     left: 20,
+              //     right: 20
+              //   ),
+              //   child: TextFormField(
+              //     controller: token,
+              //     decoration: InputDecoration(
+              //       labelText: "Token Name",
+              //       hintText: "Enter your token name",
+              //       border: OutlineInputBorder()
+              //     ),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(
                   top: 5,

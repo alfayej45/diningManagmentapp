@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DinnerMealHere extends StatefulWidget {
@@ -7,28 +8,44 @@ class DinnerMealHere extends StatefulWidget {
   @override
   State<DinnerMealHere> createState() => _DinnerMealHereState();
 }
-
 class _DinnerMealHereState extends State<DinnerMealHere> {
 
   String? imageUrl =""; 
   String ? name ="";
+  int? updateprice;
+
+  FirebaseAuth auth=FirebaseAuth.instance;
 
    Future<void> dinnerConfirmMeal() async {
     final collucrion = FirebaseFirestore.instance.collection('DinnerMealConfirm');
     await collucrion.add({
       "conMealImage": imageUrl,
-      "name": name,
-    
-      
-    });
-
+      "name": name,});
    imageUrl= ""; 
     name = "";
-    
-    
   }
 
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('Dinner').snapshots();
+
+  final balanceupdate = FirebaseFirestore.instance.collection('user');
+
+  MealUpdate(snapshot) async {
+    print(snapshot["id"]);
+    print(snapshot["mealPrice"]);
+    final user = FirebaseFirestore.instance
+        .collection("user")
+        .doc(auth.currentUser!.uid)
+        .get();
+    user.then((value) => {
+      updateprice = int.parse(value["currentBalance"].toString()) -
+          int.parse(snapshot["mealPrice"]),
+      print(updateprice),
+      print(value["currentBalance"].toString()),
+      balanceupdate.doc(value["uid"]).update({
+        "currentBalance": updateprice!.toString(),
+      })
+    });
+  }
 
 
   @override
@@ -88,7 +105,8 @@ class _DinnerMealHereState extends State<DinnerMealHere> {
                               onTap:(){
                                  imageUrl = data['downloadURL'];
                                 name = data['mealname'];
-                                confirmShowAlertDialog(context);
+
+                                confirmShowAlertDialog(data);
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -118,15 +136,12 @@ class _DinnerMealHereState extends State<DinnerMealHere> {
     );
   }
    
-confirmShowAlertDialog(BuildContext context){
+confirmShowAlertDialog(data){
 
  AlertDialog alert = AlertDialog(
    title: Column(
      children: [
        Text("Are you sure Confirm this meal"),
-      
-
-      
      ],
    ),
    
@@ -143,16 +158,14 @@ confirmShowAlertDialog(BuildContext context){
     ),
     
      TextButton(
-          child:  Text("Yes", style: TextStyle(color: Colors.blue)),
-          onPressed: (){
-            dinnerConfirmMeal();
+            child:  Text("Yes", style: TextStyle(color: Colors.blue)),
+              onPressed: (){
+         //   dinnerConfirmMeal();
+              MealUpdate(data);
               Navigator.of(context).pop();
           
           },
-    ),
-
-
-       ],
+    ),],
      )
 
   ]
@@ -161,10 +174,7 @@ confirmShowAlertDialog(BuildContext context){
  showDialog(
    context: context,
     builder: (BuildContext context){
-      return alert;
-
-    }
-    );
+      return alert;});
   
 
 }

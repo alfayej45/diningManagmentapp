@@ -1,10 +1,9 @@
 import 'dart:ui';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class BalanceLoadUserRequest extends StatefulWidget {
-  const BalanceLoadUserRequest({ Key? key }) : super(key: key);
+  const BalanceLoadUserRequest({Key? key}) : super(key: key);
 
   @override
   _BalanceLoadUserRequestState createState() => _BalanceLoadUserRequestState();
@@ -13,6 +12,8 @@ class BalanceLoadUserRequest extends StatefulWidget {
 class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+
+  int? updateprice;
 
   @override
   void initState() {
@@ -26,125 +27,124 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     _controller.dispose();
   }
 
-    
-    final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('Balance Load').snapshots();
+  final balanceupdate = FirebaseFirestore.instance.collection('user');
 
-  int ? amount = 500;
+  UpdateMeal(snapshot) async {
+    print(snapshot["token"]);
+    final user = FirebaseFirestore.instance.collection('user').doc(snapshot["token"]).get();
+    user.then((value) => {
+          print("c.balance" + value["currentBalance"]),
+          print("balance" + snapshot["amount"]),
+          setState(() {
+            updateprice = int.parse(snapshot["amount"]) + int.parse(value["currentBalance"]);
+            print(updateprice);
+            balanceupdate.doc(snapshot["token"]).update({
+              "currentBalance": updateprice!.toString(),
+            });
 
+            FirebaseFirestore.instance
+                .collection('BalanceLoad')
+                .doc(snapshot["id"])
+                .delete();
+          })
+        });
+  }
+
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('BalanceLoad').snapshots();
+  int? amount = 500;
   @override
   Widget build(BuildContext context) {
-
-
-     return Scaffold(
-       appBar:AppBar(
-         title: Text("Total request")
-       ),
-       body: StreamBuilder<QuerySnapshot>(
+    return Scaffold(
+      appBar: AppBar(title: Text("Total request")),
+      body: StreamBuilder<QuerySnapshot>(
         stream: _usersStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot, ) {
-            if(!snapshot.hasData){
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<QuerySnapshot> snapshot,
+        ) {
+          if (!snapshot.hasData) {
             return Center(
               child: Text("Loading...."),
             );
-
-          }
-        else  if (snapshot.hasError) {
+          } else if (snapshot.hasError) {
             return Text('Something went wrong');
           }
-     
           if (snapshot.connectionState == ConnectionState.done) {
             return Text("Loading");
           }
-     
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            Map<String, dynamic> data = document.data()! as Map<String, dynamic>;
-           
-           
+              Map<String, dynamic> data =
+                  document.data()! as Map<String, dynamic>;
               return Card(
-                elevation:5,
+                elevation: 5,
                 child: Container(
-                  alignment: Alignment.center,
-                  height:150,
-                  width: MediaQuery.of(context).size.width,
-                  //color: (data.length %2 == 0)? Colors.white : Colors.grey,
-                  color: Colors.grey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(data['name'], style: TextStyle(color: Colors.white)),
-                      Text(data['token'], style: TextStyle(color: Colors.white)),
-                      Text("Total Amount : ${data['amount']}", style: TextStyle(color: Colors.white)),
-                       SizedBox(height:10),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 80, top:10),
-                          child: Row(children: [
-
-                              InkWell(
-                                onTap: (){
-                                  
-
-                                  cancelshowAlertDialog(context);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 25,
-                                  width: 80,
-                                   decoration: BoxDecoration(
-                                                   color: Colors.red,
-                                                   borderRadius: BorderRadius.circular(9)
-                                                ),
-                                  
-                                  
-                                     child: Text("Cancel", style: TextStyle(color: Colors.white))
-                                     
+                    alignment: Alignment.center,
+                    height: 150,
+                    width: MediaQuery.of(context).size.width,
+                    //color: (data.length %2 == 0)? Colors.white : Colors.grey,
+                    color: Colors.grey,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(data['name'],
+                              style: TextStyle(color: Colors.white)),
+                          Text(data['token'],
+                              style: TextStyle(color: Colors.white)),
+                          Text("Total Amount : ${data['amount']}",
+                              style: TextStyle(color: Colors.white)),
+                          SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 80, top: 10),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    cancelshowAlertDialog(data);
+                                  },
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      height: 25,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(9)),
+                                      child: Text("Cancel",
+                                          style:
+                                              TextStyle(color: Colors.white))),
                                 ),
-                              ),
-                                 SizedBox(width: 40),
-                                  InkWell(
-                                onTap: (){
-                                  acceptshowAlertDialog(context);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 25,
-                                  width: 80,
-                                   decoration: BoxDecoration(
-                                                   color: Colors.green,
-                                                   borderRadius: BorderRadius.circular(9)
-                                                ),
-                                  
-                                  
-                                     child: Text("Accept", style: TextStyle(color: Colors.white))
-                                     
+                                SizedBox(width: 40),
+                                InkWell(
+                                  onTap: () {
+                                    acceptshowAlertDialog(data);
+                                  },
+                                  child: Container(
+                                      alignment: Alignment.center,
+                                      height: 25,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius:
+                                              BorderRadius.circular(9)),
+                                      child: Text("Accept",
+                                          style:
+                                              TextStyle(color: Colors.white))),
                                 ),
-                              ),
-                    ],
-                  ),
-                        ),
-                  
-
-                    ]
-                  )
-                ),
+                              ],
+                            ),
+                          ),
+                        ])),
               );
             }).toList(),
           );
         },
-         ),
-     );
-
-
-
-
-
-
-
-
+      ),
+    );
 
     // return Scaffold(
-
 
     //    body:CustomScrollView(
     //     slivers:[
@@ -188,7 +188,7 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //                             filled : true,
     //                             fillColor: Colors.white,
     //                             hintText: "Search user"
-                
+
     //                           ),
     //                         ),
     //                       ),
@@ -197,7 +197,7 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //                         width: 30,
     //                         color: Colors.blueGrey,
     //                         child: Icon(Icons.search, color: Colors.white),
-                
+
     //                       )
     //                     ],
     //                   )
@@ -206,8 +206,6 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //             ),
     //           ),
     //         ),
-            
-          
 
     //       ),
     //       SliverList(
@@ -223,7 +221,7 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //                 CircleAvatar(
     //                   radius: 20,
     //                   backgroundImage: NetworkImage("https://im.rediff.com/money/2014/sep/19sundar4.jpg"),
-                      
+
     //                 ),
     //                 SizedBox(width: 10,),
     //                 VerticalDivider(
@@ -244,13 +242,6 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //                     Text("SHAHINUR"),
     //                     Text("Total Amount=$amount"),
 
-
-
-                        
-
-
-
-
     //                     SizedBox(height:10),
     //                     Row(children: [
 
@@ -266,10 +257,9 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //                                              color: Colors.red,
     //                                              borderRadius: BorderRadius.circular(9)
     //                                           ),
-                                
-                                
+
     //                                child: Text("Cancel")
-                                   
+
     //                           ),
     //                         ),
     //                            SizedBox(width: 10),
@@ -286,22 +276,13 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //                                                    color: Colors.blue,
     //                                                    borderRadius: BorderRadius.circular(9)
     //                                                 ),
-                                                                
-                                                                
+
     //                                                                child: Text("Accept")
-                                                                   
+
     //                                                           ),
     //                               ),
 
-
-
     //                     ],)
-
-
-
-            
-
-
 
     // //                      StreamBuilder<QuerySnapshot>(
     // //   stream: _usersStream,
@@ -324,7 +305,6 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     // //           Text(data["name"]),
     // //           Text("Total Amount = ${data[amount]}"),
 
-
     // //                      SizedBox(height:10),
     // //                     Row(children: [
 
@@ -340,10 +320,9 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     // //                                              color: Colors.red,
     // //                                              borderRadius: BorderRadius.circular(9)
     // //                                           ),
-                                
-                                
+
     // //                                child: Text("Cancel")
-                                   
+
     // //                           ),
     // //                         ),
     // //                            SizedBox(width: 10),
@@ -360,21 +339,15 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     // //                                                    color: Colors.blue,
     // //                                                    borderRadius: BorderRadius.circular(9)
     // //                                                 ),
-                                                                
-                                                                
+
     // //                                                                child: Text("Accept")
-                                                                   
+
     // //                                                           ),
     // //                               ),
 
-
-
     // //                     ],)
 
-
-
     // //         ],);
-
 
     // //         //  ListTile(
     // //         //   title: Text(data['full_name']),
@@ -385,15 +358,9 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     // //   },
     // // )
 
-
-
-                        
-                       
     //                   ],
     //                 ),
 
-                    
-                  
     //               ],
     //             ),
     //           ),
@@ -405,124 +372,82 @@ class _BalanceLoadUserRequestState extends State<BalanceLoadUserRequest>
     //     ]
     //   )
 
-
-      
-     
     // );
   }
 
+  cancelshowAlertDialog(data) {
+    AlertDialog alert = AlertDialog(
+        title: Column(
+          children: [
+            Text("Do you Cancel this request"),
+            Text("You can click cancel button")
+          ],
+        ),
+        actions: [
+          Row(
+            children: [
+              TextButton(
+                child: Text("No",
+                    style: TextStyle(color: Colors.blue, fontSize: 20)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text("Cancel",
+                    style: TextStyle(color: Colors.red, fontSize: 20)),
+                onPressed: () async {
+                  final docUser = FirebaseFirestore.instance
+                      .collection('Balance Load')
+                      .doc('ldz4y8X4MvzoUXhmmxi8');
 
+                  docUser.delete();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          )
+        ]);
 
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
+  }
 
+  acceptshowAlertDialog(data) {
+    AlertDialog alert = AlertDialog(
+        title: Column(
+          children: [
+            Text("Do you Accept this request"),
+            Text("You can click Accept button")
+          ],
+        ),
+        actions: [
+          Row(
+            children: [
+              TextButton(
+                child: Text("No",
+                    style: TextStyle(color: Colors.red, fontSize: 20)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text("Accept", style: TextStyle(color: Colors.blue)),
+                onPressed: () {
+                  UpdateMeal(data);
+                },
+              ),
+            ],
+          )
+        ]);
 
-cancelshowAlertDialog(BuildContext context){
-
- AlertDialog alert = AlertDialog(
-   title: Column(
-     children: [
-       Text("Do you Cancel this request"),
-       Text("You can click cancel button")
-
-      
-     ],
-   ),
-   
-  actions:[
-
-     Row(
-       children: [
-         TextButton(
-          child:  Text("No", style: TextStyle(color: Colors.blue, fontSize: 20)),
-          onPressed: (){
-            Navigator.of(context).pop();
-          
-          },
-    ),
-    
-     TextButton(
-          child:  Text("Cancel", style: TextStyle(color: Colors.red, fontSize: 20)),
-          onPressed: ()async{
- final docUser = FirebaseFirestore.instance.collection('Balance Load').doc('ldz4y8X4MvzoUXhmmxi8');
-           
-                                  docUser.delete();
-                                  Navigator.of(context).pop();
-
-            
-
-            
-          
-          },
-    ),
-
-
-       ],
-     )
-
-  ]
- );
-
- showDialog(
-   context: context,
-    builder: (BuildContext context){
-      return alert;
-
-    }
-    );
-  
-
-
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        });
+  }
 }
-
-
-
-
-
-acceptshowAlertDialog(BuildContext context){
-
- AlertDialog alert = AlertDialog(
-   title: Column(
-     children: [
-       Text("Do you Accept this request"),
-       Text("You can click Accept button")
-
-      
-     ],
-   ),
-   
-  actions:[
-
-     Row(
-       children: [
-         TextButton(
-          child:  Text("No", style: TextStyle(color: Colors.red, fontSize: 20)),
-          onPressed: (){
-           Navigator.of(context).pop();
-          
-          },
-    ),
-    
-     TextButton(
-          child:  Text("Accept", style: TextStyle(color: Colors.blue)),
-          onPressed: (){
-          
-          },
-    ),
-
-
-       ],
-     )
-
-  ]
- );
-
- showDialog(
-   context: context,
-    builder: (BuildContext context){
-      return alert;
-
-    }
-    );
-  
-
-}
-    }

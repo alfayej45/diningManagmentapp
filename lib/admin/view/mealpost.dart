@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:random_string/random_string.dart';
 
 class MealPostHere extends StatefulWidget {
   MealPostHere({Key? key}) : super(key: key);
@@ -56,7 +57,6 @@ class _MealPostHereState extends State<MealPostHere> {
       }
     });
   }
-
    Future imagePickerMethodCamera() async {
     final pick = await imagePicker.pickImage(source: ImageSource.camera);
     setState(() {
@@ -118,16 +118,19 @@ class _MealPostHereState extends State<MealPostHere> {
 
 
     // cloud firestore
-    await firebaseFirestore
-        .collection("Morning")
+    // await firebaseFirestore
+    //     .collection("Morning")
+    //
         // .doc()
         // .collection("images")
-        
-        .add({
+     final collucrion = FirebaseFirestore.instance.collection('Morning');
+     var docs = randomString(10);
+       collucrion.doc(docs.toString()).set({
           'downloadURL': downloadURL,
          "mealname": mealName.text,
-      "mealPrice": mealPrice.text,
-      "stockNumber": stockNumber.text,
+       "mealPrice": mealPrice.text,
+       "stockNumber": stockNumber.text,
+       "id":docs.toString(),
           }).whenComplete(
             () => showSnackBar("Image Uploaded", Duration(seconds: 2)));
   }
@@ -197,10 +200,6 @@ class _MealPostHereState extends State<MealPostHere> {
   }
 
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
   return Scaffold(
@@ -213,14 +212,12 @@ class _MealPostHereState extends State<MealPostHere> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
 
-
               SizedBox(height: 45,),
               Padding(
                 padding: const EdgeInsets.only(
                   top: 20
                 ),
                 child: Stack(
-                  overflow: Overflow.visible,
                   children: [
                      CircleAvatar(
                     radius: 50,

@@ -1,3 +1,4 @@
+import 'package:diningmanagement/admin/view/admin_profile.dart';
 import 'package:diningmanagement/admin/view/allconfirmmeal.dart';
 import 'package:diningmanagement/admin/view/diningaccount.dart';
 import 'package:diningmanagement/admin/view/dinnerconfirmmeal.dart';
@@ -17,9 +18,10 @@ import 'package:diningmanagement/view/morningmeal.dart';
 import 'package:diningmanagement/view/morningmealhere.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class AdminHome extends StatefulWidget {
-  const AdminHome({ Key? key }) : super(key: key);
+  const AdminHome({Key? key}) : super(key: key);
 
   @override
   _AdminHomeState createState() => _AdminHomeState();
@@ -28,6 +30,8 @@ class AdminHome extends StatefulWidget {
 class _AdminHomeState extends State<AdminHome>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  var box = Hive.box('user');
+  bool loder=true;
 
   @override
   void initState() {
@@ -40,142 +44,147 @@ class _AdminHomeState extends State<AdminHome>
     super.dispose();
     _controller.dispose();
   }
-   Future<void> logout(BuildContext context)async {
+
+  Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Login()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.center,
-              color: Colors.green,
-              height: 200,
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                          Container(
-              alignment: Alignment.bottomCenter,
-              color: Colors.green,
-              height: 100,
-              width: MediaQuery.of(context).size.width,
-              child: Text("Dining", style: TextStyle(color: Colors.red, fontSize: 50)),
-
-            ),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                color: Colors.green,
+                height: 200,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  children: [
                     Container(
-              alignment: Alignment.topCenter,
-              color: Colors.green,
-              height: 100,
-              width: MediaQuery.of(context).size.width,
-              child: Text("Management", style: TextStyle(color: Colors.red, fontSize: 50)),
-
-            ),
-         
-                ],
+                      alignment: Alignment.bottomCenter,
+                      color: Colors.green,
+                      height: 100,
+                      width: MediaQuery.of(context).size.width,
+                      child: Text("Dining",
+                          style: TextStyle(color: Colors.red, fontSize: 50)),
+                    ),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      color: Colors.green,
+                      height: 100,
+                      width: MediaQuery.of(context).size.width,
+                      child: Text("Management",
+                          style: TextStyle(color: Colors.red, fontSize: 50)),
+                    ),
+                  ],
+                ),
               ),
-
-            ),
-
-               InkWell(
-                 onTap: (){
-                   Navigator.pop(context);
-                 },
-                 child: ListTile(
-                             leading: Icon(Icons.home),
-                             title: Text("Home"),
-                             trailing: Icon(Icons.arrow_forward_ios),
-                           ),
-               ),
-               InkWell(
-                 onTap: (){
-                   Navigator.push(context, MaterialPageRoute(builder: (context)=> DiningAccount()));
-                 },
-                 child: ListTile(
-                             leading: Icon(Icons.account_balance),
-                             title: Text("Dining Account"),
-                             trailing: Icon(Icons.arrow_forward_ios),
-                           ),
-               ),
-               InkWell(
-                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>MealPostHere()) );
-
-                 },
-                 child: ListTile(
-                             leading: Icon(Icons.no_meals),
-                             title: Text("Meal Post"),
-                             trailing: Icon(Icons.arrow_forward_ios),
-                           ),
-               ),
-                 InkWell(
-                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowMealPost()) );
-
-                 },
-                 child: ListTile(
-                             leading: Icon(Icons.set_meal),
-                             title: Text("Show Meal Post"),
-                             trailing: Icon(Icons.arrow_forward_ios),
-                           ),
-               ),
-               InkWell(
-                 onTap: (){
-                   Navigator.push(context, MaterialPageRoute(builder: (Context)=> BalanceLoadUserRequest()));
-                 },
-                 child: ListTile(
-                             leading: Icon(Icons.balcony_sharp),
-                             title: Text("User Balance Load Request"),
-                             trailing: Icon(Icons.arrow_forward_ios),
-                           ),
-               ),
-                  InkWell(
-                 onTap: (){
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text("Home"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => DiningAccount()));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.account_balance),
+                  title: Text("Dining Account"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => MealPostHere()));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.no_meals),
+                  title: Text("Meal Post"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ShowMealPost()));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.set_meal),
+                  title: Text("Show Meal Post"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (Context) => BalanceLoadUserRequest()));
+                },
+                child: ListTile(
+                  leading: Icon(Icons.balcony_sharp),
+                  title: Text("User Balance Load Request"),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
+              ),
+              InkWell(
+                onTap: () {
                   logout(context);
-
-                 },
-                 child: ListTile(
-                             leading: Icon(Icons.accessible_forward_outlined),
-                             title: Text("Logout Here"),
-                             trailing: Icon(Icons.logout),
-                           ),
-               ),
-            
-          ],
+                },
+                child: ListTile(
+                  leading: Icon(Icons.accessible_forward_outlined),
+                  title: Text("Logout Here"),
+                  trailing: Icon(Icons.logout),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-      ),
       appBar: AppBar(
-        
         title: Text("Today's List"),
         centerTitle: true,
         elevation: 0.0,
-          actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 15,
-                  backgroundImage: NetworkImage("https://im.rediff.com/money/2014/sep/19sundar4.jpg"),
-                ),
-              )
-            ],
+        actions: [
+         InkWell(
+            onTap: () {
+
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (Context) => AdminAccount()));
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(
+                radius: 15,
+                backgroundImage: NetworkImage(box.get("image")?? "")
+              ),
+            ),
+          )
+        ],
       ),
+      body: ListView(
+        shrinkWrap: true,
+        primary: false,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(0.0),
+            child:
 
-
-       body: ListView(
-         shrinkWrap: true,
-         primary: false,
-         children: [
-           Padding(
-             padding: const EdgeInsets.all(0.0),
-             child:
-               
 //                 new Swiper(
 //                  autoplay: true,
 
@@ -190,59 +199,46 @@ class _AdminHomeState extends State<AdminHome>
 //   itemCount: 5,
 //   itemWidth: 300.0,
 // ),
-          
 
-           
-               Container(
-                 height: MediaQuery.of(context).size.height,
-                 child: DefaultTabController(length: 4, child: Scaffold(
-                   appBar: AppBar(
-                     
+                Container(
+              height: MediaQuery.of(context).size.height,
+              child: DefaultTabController(
+                  length: 4,
+                  child: Scaffold(
+                    appBar: AppBar(
                       title: Text('Total Confirmed Meal : 200'),
                       centerTitle: true,
-                     bottom: TabBar(
-                       
-                      // indicatorSize: TabBarIndicatorSize.tab,
-                       tabs: [
+                      bottom: TabBar(
+                        // indicatorSize: TabBarIndicatorSize.tab,
+                        tabs: [
                           Tab(icon: Icon(Icons.food_bank), text: "All"),
-                          Tab(icon: Icon(Icons.breakfast_dining), text: "Morning"),
+                          Tab(
+                              icon: Icon(Icons.breakfast_dining),
+                              text: "Morning"),
                           Tab(icon: Icon(Icons.lunch_dining), text: "Lunch"),
-                          Tab(icon: Icon(Icons.dinner_dining),text: "Dinner"),
-                        //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
-                        //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
-                        //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
-                        //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
-                        //   Tab(child: Text("All"),),
-                        //  Tab(child: Text("Morning"),),
-                        //  Tab(child: Text("Lunch"),),
-                        //  Tab(child: Text("Dinner"),),
-                     ],
-                     ),
-                   ),
-                   body: TabBarView(
-                     
-                     children: [
-
-                    AllConfirmMeal(),
-                    MorningConfirmMeal(),
-                    LunchConfirmMeal(),
-                    DinnerConfirmMeal(),
-
-
-
-                   ]),
-
-                 )),
-               ),
-
-
-
-
-           )
-
-         ],
-       ),
-      
+                          Tab(icon: Icon(Icons.dinner_dining), text: "Dinner"),
+                          //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
+                          //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
+                          //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
+                          //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
+                          //   Tab(child: Text("All"),),
+                          //  Tab(child: Text("Morning"),),
+                          //  Tab(child: Text("Lunch"),),
+                          //  Tab(child: Text("Dinner"),),
+                        ],
+                      ),
+                    ),
+                    body: TabBarView(children: [
+                      AllConfirmMeal(),
+                      MorningConfirmMeal(),
+                      LunchConfirmMeal(),
+                      DinnerConfirmMeal(),
+                    ]),
+                  )),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
