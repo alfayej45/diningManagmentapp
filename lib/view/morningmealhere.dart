@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class MorningMealHere extends StatefulWidget {
   MorningMealHere({Key? key}) : super(key: key);
@@ -13,15 +14,21 @@ class _MorningMealHereState extends State<MorningMealHere> {
   String? imageUrl = "";
   String? name = "";
   int? updateprice;
+  var box = Hive.box('user');
+
 
   FirebaseAuth auth=FirebaseAuth.instance;
 
   Future<void> morningConfirmMeal() async {
+    var uid = DateTime.now().microsecondsSinceEpoch;
     final collucrion =
         FirebaseFirestore.instance.collection('morningMealConfirm');
-    await collucrion.add({
+    await collucrion.doc(uid.toString()).set({
       "conMealImage": imageUrl,
       "name": name,
+      "username":box.get("name"),
+      "uid":uid.toString()
+
     });
 
     imageUrl = "";
@@ -41,7 +48,6 @@ class _MorningMealHereState extends State<MorningMealHere> {
       updateprice = int.parse(value["currentBalance"].toString()) - int.parse(snapshot["mealPrice"]),
       print(updateprice),
       print(value["currentBalance"].toString()),
-
        balanceupdate.doc(value["uid"]).update({
         "currentBalance": updateprice!.toString(),
       })

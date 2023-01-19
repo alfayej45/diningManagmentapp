@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class LunchMealHere extends StatefulWidget {
   LunchMealHere({Key? key}) : super(key: key);
@@ -14,13 +15,18 @@ class _LunchMealHereState extends State<LunchMealHere> {
   String? name = "";
   int? updateprice;
   FirebaseAuth auth = FirebaseAuth.instance;
+  var box=Hive.box("user");
 
   Future<void> lunchConfirmMeal() async {
+
+    var uid = DateTime.now().microsecondsSinceEpoch;
     final collucrion =
         FirebaseFirestore.instance.collection('LunchMealConfirm');
-    await collucrion.add({
+    await collucrion.doc(uid.toString()).set({
       "conMealImage": imageUrl,
       "name": name,
+      "username":box.get("name"),
+      "uid":uid.toString()
     });
 
     imageUrl = "";
@@ -143,7 +149,7 @@ class _LunchMealHereState extends State<LunchMealHere> {
               TextButton(
                 child: Text("Yes", style: TextStyle(color: Colors.blue)),
                 onPressed: () {
-                  //   lunchConfirmMeal();
+                  lunchConfirmMeal();
                   MealUpdate(data);
 
                   Navigator.of(context).pop();

@@ -31,13 +31,13 @@ class _AllConfirmMealState extends State<AllConfirmMeal> {
           else if (snapshot.hasError) {
             return Text('Something went wrong');
           }
-     
+
           if (snapshot.connectionState == ConnectionState.done) {
             return Text("Loading");
           }
-     
+
           return Container(
-        
+
         // height: 300,
         // width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(12.0),
@@ -47,7 +47,7 @@ class _AllConfirmMealState extends State<AllConfirmMeal> {
             crossAxisCount: 2,
             crossAxisSpacing: 4.0,
             mainAxisSpacing: 4.0,
-          ), 
+          ),
           itemBuilder: (BuildContext context, int index){
              DocumentSnapshot data = snapshot.data!.docs[index];
             return Container(
@@ -60,7 +60,7 @@ class _AllConfirmMealState extends State<AllConfirmMeal> {
                            SizedBox(height: 10),
                            Container(
                              height: 80,
-                             width: MediaQuery.of(context).size.width, 
+                             width: MediaQuery.of(context).size.width,
                              child: Image.network(data['conMealImage'])),
                              SizedBox(height: 5),
                            Text(data['name']),
@@ -69,7 +69,7 @@ class _AllConfirmMealState extends State<AllConfirmMeal> {
                            SizedBox(height: 5),
                           //  Text("Price : 200"),
                           //  SizedBox(height: 5),
-                        
+
 
 
                          ],

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class DinnerMealHere extends StatefulWidget {
   DinnerMealHere({Key? key}) : super(key: key);
@@ -9,20 +10,30 @@ class DinnerMealHere extends StatefulWidget {
   State<DinnerMealHere> createState() => _DinnerMealHereState();
 }
 class _DinnerMealHereState extends State<DinnerMealHere> {
+  var box=Hive.box("user");
 
   String? imageUrl =""; 
   String ? name ="";
   int? updateprice;
 
+  FirebaseAuth authname=FirebaseAuth.instance;
+
   FirebaseAuth auth=FirebaseAuth.instance;
 
    Future<void> dinnerConfirmMeal() async {
+     var uid=DateTime.now().microsecondsSinceEpoch;
+
     final collucrion = FirebaseFirestore.instance.collection('DinnerMealConfirm');
-    await collucrion.add({
+    await collucrion.doc(uid.toString()).set({
       "conMealImage": imageUrl,
-      "name": name,});
-   imageUrl= ""; 
-    name = "";
+      "name": name,
+      "username":box.get("name"),
+      "uid":uid.toString(),
+
+    });
+       imageUrl= "";
+       name = "";
+
   }
 
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('Dinner').snapshots();
@@ -160,7 +171,7 @@ confirmShowAlertDialog(data){
      TextButton(
             child:  Text("Yes", style: TextStyle(color: Colors.blue)),
               onPressed: (){
-         //   dinnerConfirmMeal();
+              dinnerConfirmMeal();
               MealUpdate(data);
               Navigator.of(context).pop();
           

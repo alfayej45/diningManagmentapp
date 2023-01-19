@@ -7,15 +7,7 @@ import 'package:diningmanagement/admin/view/mealpost.dart';
 import 'package:diningmanagement/admin/view/morningconfirmmeal.dart';
 import 'package:diningmanagement/admin/view/showmealpost.dart';
 import 'package:diningmanagement/admin/view/uerbalanceloadrequest.dart';
-import 'package:diningmanagement/view/allmeal.dart';
-import 'package:diningmanagement/view/allmealhere.dart';
-import 'package:diningmanagement/view/dinnermeal.dart';
-import 'package:diningmanagement/view/dinnermealhere.dart';
 import 'package:diningmanagement/view/login.dart';
-import 'package:diningmanagement/view/lunchmeal.dart';
-import 'package:diningmanagement/view/lunchmealhere.dart';
-import 'package:diningmanagement/view/morningmeal.dart';
-import 'package:diningmanagement/view/morningmealhere.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -26,7 +18,6 @@ class AdminHome extends StatefulWidget {
   @override
   _AdminHomeState createState() => _AdminHomeState();
 }
-
 class _AdminHomeState extends State<AdminHome>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
@@ -164,6 +155,7 @@ class _AdminHomeState extends State<AdminHome>
          InkWell(
             onTap: () {
 
+
               Navigator.push(context,
                   MaterialPageRoute(builder: (Context) => AdminAccount()));
             },
@@ -203,18 +195,17 @@ class _AdminHomeState extends State<AdminHome>
                 Container(
               height: MediaQuery.of(context).size.height,
               child: DefaultTabController(
-                  length: 4,
+                  length: 3,
                   child: Scaffold(
                     appBar: AppBar(
                       title: Text('Total Confirmed Meal : 200'),
                       centerTitle: true,
                       bottom: TabBar(
+                        physics: NeverScrollableScrollPhysics(),
                         // indicatorSize: TabBarIndicatorSize.tab,
                         tabs: [
-                          Tab(icon: Icon(Icons.food_bank), text: "All"),
-                          Tab(
-                              icon: Icon(Icons.breakfast_dining),
-                              text: "Morning"),
+                          // Tab(icon: Icon(Icons.food_bank), text: "All"),
+                          Tab(icon: Icon(Icons.breakfast_dining), text: "Morning"),
                           Tab(icon: Icon(Icons.lunch_dining), text: "Lunch"),
                           Tab(icon: Icon(Icons.dinner_dining), text: "Dinner"),
                           //  Tab(icon: Icon(Icons.male_outlined),child: Text("All"),),
@@ -228,8 +219,9 @@ class _AdminHomeState extends State<AdminHome>
                         ],
                       ),
                     ),
-                    body: TabBarView(children: [
-                      AllConfirmMeal(),
+                    body: TabBarView(
+                        children: [
+                      // AllConfirmMeal(),
                       MorningConfirmMeal(),
                       LunchConfirmMeal(),
                       DinnerConfirmMeal(),

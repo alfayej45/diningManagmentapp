@@ -12,6 +12,8 @@ class AdminAccount extends StatefulWidget {
 
 class _AdminAccountState extends State<AdminAccount>
     with SingleTickerProviderStateMixin {
+
+  bool loder=true;
   late AnimationController _controller;
 
   @override
@@ -20,6 +22,7 @@ class _AdminAccountState extends State<AdminAccount>
     _controller.dispose();
 
   }
+
 
   FirebaseAuth firebaseauth = FirebaseAuth.instance;
   final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('manager').snapshots();
@@ -30,9 +33,14 @@ class _AdminAccountState extends State<AdminAccount>
         body: StreamBuilder<QuerySnapshot> (
           stream: FirebaseFirestore.instance.collection("manager").snapshots(),
           builder: (context,snapshots){
+            if(snapshots.connectionState == ConnectionState.waiting){
+              return Center(child: CircularProgressIndicator(),);
+            }
             return ListView.builder(
                 itemCount: snapshots.data!.docs.length,
                 itemBuilder: (context,index){
+
+
                   QueryDocumentSnapshot document=snapshots.data!.docs[index];
                   return firebaseauth.currentUser!.uid==document['uid']?Container(
                     height: MediaQuery.of(context).size.height,
@@ -46,7 +54,6 @@ class _AdminAccountState extends State<AdminAccount>
                           CircleAvatar(
                             radius: 50,
                             backgroundImage: NetworkImage(document["photo"]),
-
                             // child: ClipRRect(
                             //   borderRadius: BorderRadius.circular(100),
 

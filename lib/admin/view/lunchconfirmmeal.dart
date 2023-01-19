@@ -10,7 +10,12 @@ class LunchConfirmMeal extends StatefulWidget {
 
 class _LunchConfirmMealState extends State<LunchConfirmMeal> {
  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('LunchMealConfirm').snapshots();
-
+ Deletdata(snapshot){
+   FirebaseFirestore.instance
+       .collection('LunchMealConfirm')
+       .doc(snapshot["uid"])
+       .delete();
+ }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +46,7 @@ class _LunchConfirmMealState extends State<LunchConfirmMeal> {
         // width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.all(12.0),
         child: GridView.builder(
+
           itemCount: snapshot.data!.docs.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
@@ -50,8 +56,6 @@ class _LunchConfirmMealState extends State<LunchConfirmMeal> {
           itemBuilder: (BuildContext context, int index){
              DocumentSnapshot data = snapshot.data!.docs[index];
             return Container(
-              height: 100,
-              width: 100,
               //width: MediaQuery.of(context).size.width,
               color: Colors.grey,
               child: Column(
@@ -64,10 +68,18 @@ class _LunchConfirmMealState extends State<LunchConfirmMeal> {
                              SizedBox(height: 5),
                            Text(data['name']),
                            SizedBox(height: 5),
-                           Text("Total confirm : 20"),
+                           Text(data['username']),
                            SizedBox(height: 5),
                           //  Text("Price : 200"),
                           //  SizedBox(height: 5),
+                           InkWell(
+                             onTap: (){
+                               Deletdata(data);
+                             },
+                             child: Align(
+                                 alignment: Alignment.bottomRight,
+                                 child: Icon(Icons.delete,color: Colors.red,)),
+                           )
                         
 
 

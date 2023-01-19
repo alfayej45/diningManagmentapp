@@ -23,7 +23,6 @@ class _DiningAccountState extends State<DiningAccount> with SingleTickerProvider
 
      final balanceupdate = FirebaseFirestore.instance.collection('user').get();
 
-
      getTotal(){
       setState(() {
         loder=true;

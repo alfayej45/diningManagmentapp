@@ -61,6 +61,8 @@ class _UserRegisterState extends State<UserRegister>
 
     box.put("type", widget.type);
     box.put("image", imagepath);
+    box.put("name", name.text);
+
 
     name.text = "";
     institude.text = "";

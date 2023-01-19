@@ -1,8 +1,6 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diningmanagement/admin/view/adminhome.dart';
 import 'package:diningmanagement/view/allmeal.dart';
-
 
 import 'package:diningmanagement/view/balanceload.dart';
 import 'package:diningmanagement/view/dinnermeal.dart';
@@ -21,7 +19,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({ Key? key }) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -43,15 +41,15 @@ class _HomePageState extends State<HomePage>
     _controller.dispose();
   }
 
-  
   FirebaseAuth firebaseauth = FirebaseAuth.instance;
 
- final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance.collection('public').snapshots();
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('public').snapshots();
 
-
-  Future<void> logout(BuildContext context)async {
+  Future<void> logout(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Login()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
   }
 
   final List<String> sliderImageList = [
@@ -68,87 +66,84 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer:  Drawer(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              Container(
-                height: 200,
-                width: MediaQuery.of(context).size.width,
-                color: Colors.indigoAccent,
-                // child:  CircleAvatar(
-                //   backgroundImage: NetworkImage(document[""]!),
-                //   maxRadius: 45,
-                //   minRadius: 30,
-                // ),
-                // child: StreamBuilder(
-                //   stream: FirebaseFirestore.instance.collection(""),
-                //   builder: ,
-                // ),
-
+      drawer: Drawer(
+          child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          children: [
+            Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.indigoAccent,
+              // child:  CircleAvatar(
+              //   backgroundImage: NetworkImage(document[""]!),
+              //   maxRadius: 45,
+              //   minRadius: 30,
+              // ),
+              // child: StreamBuilder(
+              //   stream: FirebaseFirestore.instance.collection(""),
+              //   builder: ,
+              // ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: ListTile(
+                leading: Icon(Icons.home),
+                title: Text("Home"),
+                trailing: Icon(Icons.arrow_forward_ios),
               ),
-              InkWell(
-                onTap: (){
-                  Navigator.pop(context);
-                },
-                child: ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text("Home"),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
-              ),
-              InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> MyAccount()));
-                }, child: ListTile(
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MyAccount()));
+              },
+              child: ListTile(
                 leading: Icon(Icons.people),
                 title: Text("My Account"),
                 trailing: Icon(Icons.arrow_forward_ios),
               ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MealHere()));
+              },
+              child: ListTile(
+                leading: Icon(Icons.no_meals),
+                title: Text("Meal here"),
+                trailing: Icon(Icons.arrow_forward_ios),
               ),
-              InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> MealHere()));
-                },
-                child: ListTile(
-                  leading: Icon(Icons.no_meals),
-                  title: Text("Meal here"),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => BalanceLoadRequestUser()));
+              },
+              child: ListTile(
+                leading: Icon(Icons.balance),
+                title: Text("Balance Load"),
+                trailing: Icon(Icons.arrow_forward_ios),
               ),
-
-              InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> BalanceLoadRequestUser()));
-
-                },
-                child: ListTile(
-                  leading: Icon(Icons.balance),
-                  title: Text("Balance Load"),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
+            ),
+            InkWell(
+              onTap: () {
+                logout(context);
+              },
+              child: ListTile(
+                leading: Icon(Icons.accessible_forward_outlined),
+                title: Text("Logout Here"),
+                trailing: Icon(Icons.logout),
               ),
-
-
-
-
-              InkWell(
-                onTap: (){
-                  logout(context);
-                },
-                child: ListTile(
-                  leading: Icon(Icons.accessible_forward_outlined),
-                  title: Text("Logout Here"),
-                  trailing: Icon(Icons.logout),
-                ),
-              ),
-
-
-            ],
-          ),
-        )),
+            ),
+          ],
+        ),
+      )),
 
       // StreamBuilder(
       //   stream: FirebaseFirestore.instance.collection("manager").snapshots(),
@@ -166,101 +161,93 @@ class _HomePageState extends State<HomePage>
       //   },
       // ),
 
-
       appBar: AppBar(
         title: InkWell(
-          onTap: (){
-            // Navigator.push(context, MaterialPageRoute(builder: (Context)=> AdminHome()));
-          },
-          child: Text("Home")),
+            onTap: () {
+              // Navigator.push(context, MaterialPageRoute(builder: (Context)=> AdminHome()));
+            },
+            child: Text("Home")),
         centerTitle: true,
-      actions: [
-        
-        // Text(box.get(""image"")??"no image"),
-       // Padding(
-       //           padding: const EdgeInsets.all(8.0),
-       //          child: InkWell(
-       //            onTap: (){
-       //              Navigator.push(context, MaterialPageRoute(builder: (context)=>MyAccount()));
-       //            },
-       //            child:CircleAvatar(
-       //              radius: 20,
-       //              child: ClipRRect(
-       //                borderRadius: BorderRadius.circular(90),
-       //                child: FutureBuilder(
-       //                  future: FireStoreDataBase().getData(),
-       //                  builder: (context, snapshot) {
-       //                    if (snapshot.hasError) {
-       //                      return const Text(
-       //                        "Something went wrong",
-       //                      );
-       //                    }
-       //                    if (snapshot.connectionState ==
-       //                        ConnectionState.done) {
-       //                      return Image.network(
-       //                        snapshot.data.toString(),
-       //                        fit: BoxFit.cover,
-       //                        height: 40,
-       //                        width: 80,
-       //                        scale: 1.0,
-       //                      );
-       //                    }
-       //                    return const Center(
-       //                        child: CircularProgressIndicator());
-       //                  },
-       //                ),
-       //              ),
-       //            ),
-       //          ),
-       //         )
-       //  StreamBuilder(
-       //    stream: FirebaseFirestore.instance.collection("user").snapshots(),
-       //      builder: (context,snapshot){
-       //      return Text(data)
-       //      })
-
-        InkWell(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>MyAccount()));
-          },
-          child: CircleAvatar(
-            radius: 15,
-            backgroundImage:NetworkImage(box.get("image")?? "") ,
-          ),
-        )
-      ],
+        actions: [
+          // Text(box.get(""image"")??"no image"),
+          // Padding(
+          //           padding: const EdgeInsets.all(8.0),
+          //          child: InkWell(
+          //            onTap: (){
+          //              Navigator.push(context, MaterialPageRoute(builder: (context)=>MyAccount()));
+          //            },
+          //            child:CircleAvatar(
+          //              radius: 20,
+          //              child: ClipRRect(
+          //                borderRadius: BorderRadius.circular(90),
+          //                child: FutureBuilder(
+          //                  future: FireStoreDataBase().getData(),
+          //                  builder: (context, snapshot) {
+          //                    if (snapshot.hasError) {
+          //                      return const Text(
+          //                        "Something went wrong",
+          //                      );
+          //                    }
+          //                    if (snapshot.connectionState ==
+          //                        ConnectionState.done) {
+          //                      return Image.network(
+          //                        snapshot.data.toString(),
+          //                        fit: BoxFit.cover,
+          //                        height: 40,
+          //                        width: 80,
+          //                        scale: 1.0,
+          //                      );
+          //                    }
+          //                    return const Center(
+          //                        child: CircularProgressIndicator());
+          //                  },
+          //                ),
+          //              ),
+          //            ),
+          //          ),
+          //         )
+          //  StreamBuilder(
+          //    stream: FirebaseFirestore.instance.collection("user").snapshots(),
+          //      builder: (context,snapshot){
+          //      return Text(data)
+          //      })
+          InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyAccount()));
+            },
+            child: CircleAvatar(
+              radius: 15,
+              backgroundImage: NetworkImage(box.get("image") ?? ""),
+            ),
+          )
+        ],
       ),
 
-       body: ListView(
-         shrinkWrap: true,
-         primary: false,
-         children: [
-           Padding(
-             padding: const EdgeInsets.all(8.0),
-             child: Container(
-               height: 120,
-               child:CarouselSlider(
-                 options: CarouselOptions(
-                   enlargeCenterPage: true,
-                   enableInfiniteScroll:false,
-                   autoPlay: true
+      body: ListView(
+        shrinkWrap: true,
+        primary: false,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+                height: 120,
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
+                      autoPlay: true),
+                  items: sliderImageList
+                      .map((e) => ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [Image.network(e, fit: BoxFit.cover)],
+                            ),
+                          ))
+                      .toList(),
+                )
 
-                 ),
-                 items: sliderImageList.map((e) => ClipRRect(
-                   borderRadius: BorderRadius.circular(10),
-
-                   child:Stack(
-                     fit:StackFit.expand,
-                     children: [
-                       Image.network(e,
-                       fit:BoxFit.cover
-                       )
-                     ],
-                   ) ,
-
-                 )).toList(),
-               )
-               
 //                 new Swiper(
 //                  autoplay: true,
 
@@ -275,58 +262,39 @@ class _HomePageState extends State<HomePage>
 //   itemCount: 5,
 //   itemWidth: 300.0,
 // ),
-             ),
-           ),
-
-           
-               Container(
-                 height: MediaQuery.of(context).size.height,
-                 child: DefaultTabController(length: 4, child: Scaffold(
-                   appBar: AppBar(
-                      title: Text('My Confirmed Meal'),
-                      centerTitle: true,
-                     bottom: TabBar(
+                ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height,
+            child: DefaultTabController(
+                length: 4,
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: Text('My Confirmed Meal'),
+                    centerTitle: true,
+                    bottom: TabBar(
                       // indicatorSize: TabBarIndicatorSize.tab,
-                       tabs: [
-                          Tab(icon: Icon(Icons.food_bank), text: "All"),
-                          Tab(icon: Icon(Icons.breakfast_dining), text: "Morning"),
-                          Tab(icon: Icon(Icons.lunch_dining), text: "Lunch"),
-                          Tab(icon: Icon(Icons.dinner_dining),text: "Dinner"),
-
-                     ],
-                     ),
-                   ),
-                   body: TabBarView(children: [
-
+                      tabs: [
+                        Tab(icon: Icon(Icons.food_bank), text: "All"),
+                        Tab(
+                            icon: Icon(Icons.breakfast_dining),
+                            text: "Morning"),
+                        Tab(icon: Icon(Icons.lunch_dining), text: "Lunch"),
+                        Tab(icon: Icon(Icons.dinner_dining), text: "Dinner"),
+                      ],
+                    ),
+                  ),
+                  body: TabBarView(children: [
                     AllMeal(),
                     MorningMeal(),
                     LunchMeal(),
                     DinnerMeal(),
-
-
-
-                   ]),
-
-                 )),
-               ),
-
-SizedBox(height: 20),
-           
-
-         ],
-       ),
-      
-      
+                  ]),
+                )),
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
     );
   }
-
-
-  
-
 }
-
-
-
-
-
-

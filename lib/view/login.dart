@@ -1,8 +1,6 @@
 import 'dart:ui';
-
 import 'package:diningmanagement/view/homepage.dart';
 import 'package:diningmanagement/view/managerregister.dart';
-import 'package:diningmanagement/view/register.dart';
 import 'package:diningmanagement/view/userregister.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

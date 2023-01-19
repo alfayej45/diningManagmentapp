@@ -31,6 +31,9 @@ class _MyAccountState extends State<MyAccount>
       body: StreamBuilder<QuerySnapshot> (
         stream: FirebaseFirestore.instance.collection("user").snapshots(),
         builder: (context,snapshots){
+          if(snapshots.connectionState==ConnectionState.waiting){
+            return Center(child: CircularProgressIndicator(),);
+          }
           return ListView.builder(
             itemCount: snapshots.data!.docs.length,
               itemBuilder: (context,index){
